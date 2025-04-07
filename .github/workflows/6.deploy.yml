@@ -8,12 +8,12 @@ env:
   MONGODB_DB_NAME: gha-demo
 jobs:
   test:
-    environment: testing
+    environment: testing #Name of the environment created under settings -> environment
     runs-on: ubuntu-latest
     env:
       MONGODB_CLUSTER_ADDRESS: githubcluster.qrovfg3.mongodb.net
-      MONGODB_USERNAME: peterarokia
-      MONGODB_PASSWORD: Pedro10!
+      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }} #Values will be considered from  settings -> environment -> environment secrets and not settings -> secrets 
+      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
       PORT: 8080
     steps:
       - name: Get Code
@@ -31,13 +31,12 @@ jobs:
         run: npm test
       - name: Output information
         run: |
-          echo "MONGODB_USERNAME: $MONGODB_USERNAME"
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME}}"
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Output information
         run: |        
-          echo "MONGODB_DB_NAME: $MONGODB_DB_NAME"
           echo "MONGODB_USERNAME: $MONGODB_USERNAME"
           echo "${{ env.PORT }}"
